@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leaderboard-deployment
+spec:
+  selector:
+    matchLabels:
+      app: leaderboard
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: leaderboard
+    spec:
+      containers:
+        - name: leaderboard
+          image: gcr.io/ccarse/leaderboard
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: myregistrykey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: leaderboard-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: leaderboard
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leaderboard-ingress
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(/leaderboard)$ $1/ redirect;
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - codycar.se
+      secretName: tls-secret
+  rules:
+  - host: codycar.se
+    http:
+      paths:
+      - path: /leaderboard(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: leaderboard-service
+            port:
+              number: 80
+

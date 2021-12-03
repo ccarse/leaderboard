@@ -1,0 +1,121 @@
+body {
+  background-color: #0f0f23;
+  color: #cccccc;
+  font-family: "Source Code Pro", monospace;
+  font-size: 14pt;
+}
+.star-gold {
+  color: #ffff66;
+  text-shadow: 0 0 5px #ffff66;
+}
+.star-silver {
+  color: #666699;
+}
+.star-gray {
+  color: #333333;
+}
+#main-table {
+  border-collapse: collapse;
+}
+#main-table td, th {
+  border: 1px solid rgb(51, 51, 51);
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+  height: 39px;
+}
+#main-table td.left-align {
+  text-align: left;
+}
+#main-table td.star-table-1 {
+  border-right: 0px;
+  padding-left: 3px;
+  padding-right: 0px;
+  text-align: center;
+  min-width: 14px;
+}
+#main-table td.star-table-2 {
+  border-left: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: center;
+  min-width: 14px;
+}
+input {
+  border: 1px solid #666666;
+  background: #10101a;
+  font-family: inherit;
+  font-weight: normal;
+  color: white;
+  font-size: 12pt;
+}
+small {
+  font-size: 80%;
+  color: #888888;
+}
+.left-align {
+  text-align: left;
+}
+.gold {
+  color: #ffda59;
+  text-shadow: 0 0 5px #ffda59;
+  font-weight: bold;
+}
+.silver {
+  color: #d3e2ec;
+  text-shadow: 0 0 5px #d3e2ec;
+  font-weight: bold;
+}
+.bronze {
+  color: #e28960;
+  text-shadow: 0 0 5px #e28960;
+  font-weight: bold;
+}
+a {
+  text-decoration: none;
+  color: #009900;
+}
+a:hover {
+  color: #99ff99;
+}
+a.tooltip {
+  text-decoration: none;
+  color: #ffff66;
+}
+a.tooltip:hover {
+  cursor: crosshair;
+  position: relative
+}
+a.tooltip > span {
+  text-align: left;
+  color: white;
+  display: none;
+  font-weight: normal;
+  font-size: 12pt;
+  line-height: normal;
+}
+a.tooltip:hover > span {
+  border: #aaaaaa 1px solid;
+  background-color: black;
+  padding: 8px 8px 8px 8px;
+  display: block;
+  z-index: 100;
+  position: absolute;
+  left: 5px;
+  top: 20px;
+  margin: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.medalOffset {
+  white-space: nowrap;
+  letter-spacing: -12px;
+  padding-right: 10px;
+}
+.medal {
+  margin-left: -2px;
+}
+.star-table-1, .star-table-2 {
+  font-size: 10pt;
+  line-height: 128%;
+}
