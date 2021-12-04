@@ -37,11 +37,8 @@ export class PlayerRow extends React.Component<Props, {}> {
     const silverMedalCount = Object.values(player.silver_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
     const bronzeMedalCount = Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
     const allMedalCount = goldMedalCount + silverMedalCount + bronzeMedalCount;
-    const name = window.location.search.replace(/^\?name=/g, "").replace(/\s/, "").toLowerCase();
     return (
-        
-    name === "" ? (  
-      <tr key={player.id} id={player.name.replace(/\s/g, "").toLowerCase() || `Anon#${player.id}`}>
+      <tr key={player.id}>
         <td>{this.props.index + 1}</td>
         <td className="left-align">{player.name || `Anon #${player.id}`}</td>
         <td>{player.local_score}</td>
@@ -170,140 +167,7 @@ export class PlayerRow extends React.Component<Props, {}> {
             );
           })
         }
-      </tr>)
-    
-    : (  
-      player.name.replace(/\s/g, "").toLowerCase() === name || player.id === name && (
-      <tr key={player.id} id={player.name.replace(/\s/g, "").toLowerCase() || `Anon#${player.id}`}>
-        <td>{this.props.index + 1}</td>
-        <td className="left-align">{player.name || `Anon #${player.id}`}</td>
-        <td>{player.local_score}</td>
-        <td>{player.stars}</td>
-        <td>{goldMedalCount}</td>
-        <td>{silverMedalCount}</td>
-        <td>{bronzeMedalCount}</td>
-        <td>{allMedalCount}</td>
-        {
-          dayInts.map(d => {
-            const partOneTime = player.stars_ts[d] && player.stars_ts[d]["1"] ? (new Date(player.stars_ts[d]["1"] * 1000)) : null;
-            const partTwoTime = player.stars_ts[d] && player.stars_ts[d]["2"] ? (new Date(player.stars_ts[d]["2"] * 1000)) : null;
-
-            let partOneGoldMedal;
-            let gotPartOneGoldMedal = player.gold_medals[`${d}`]["1"];
-            let partTwoGoldMedal;
-            let gotPartTwoGoldMedal = player.gold_medals[`${d}`]["2"];
-            let partOneSilverMedal;
-            let gotPartOneSilverMedal = player.silver_medals[`${d}`]["1"];
-            let partTwoSilverMedal;
-            let gotPartTwoSilverMedal = player.silver_medals[`${d}`]["2"];
-            let partOneBronzeMedal;
-            let gotPartOneBronzeMedal = player.bronze_medals[`${d}`]["1"];
-            let partTwoBronzeMedal;
-            let gotPartTwoBronzeMedal = player.bronze_medals[`${d}`]["2"];
-
-            const partOneTooltip = partOneTime ? (
-              <span>
-                Day {d} Star 1<br />
-                Obtained {partOneTime.toLocaleString()}<br />
-                {(gotPartOneGoldMedal && 'Gold Medal') || (gotPartOneSilverMedal && 'Silver Medal') || (gotPartOneBronzeMedal && 'Bronze Medal')}
-              </span>
-            ) : null;
-            const partTwoTooltip = partTwoTime ? (
-              <span>
-                Day {d} Star 2<br />
-                Obtained {partTwoTime.toLocaleString()}<br />
-                {(gotPartTwoGoldMedal && 'Gold Medal') || (gotPartTwoSilverMedal && 'Silver Medal') || (gotPartTwoBronzeMedal && 'Bronze Medal')}
-              </span>
-            ) : null;
-
-            if (gotPartOneGoldMedal) {
-              partOneGoldMedal = (
-                <a href="#" className="tooltip">
-                  🥇
-                  {partOneTooltip}
-                </a>
-              );
-            }
-            
-            // console.log(player.gold_medals[`${d}`][2]);
-            if (gotPartTwoGoldMedal) {
-              partTwoGoldMedal = (
-                <a href="#" className="tooltip">
-                  🥇
-                  {partTwoTooltip}
-                </a>
-              );
-            }
-            
-            if (gotPartOneSilverMedal) {
-              partOneSilverMedal = (
-                <a href="#" className="tooltip">
-                  🥈
-                  {partOneTooltip}
-                </a>
-              );
-            }
-            
-            if (gotPartTwoSilverMedal) {
-              partTwoSilverMedal = (
-                <a href="#" className="tooltip">
-                  🥈
-                  {partTwoTooltip}
-                </a>
-              );
-            }
-            
-            if (gotPartOneBronzeMedal) {
-              partOneBronzeMedal = (
-                <a href="#" className="tooltip">
-                  🥉
-                  {partOneTooltip}
-                </a>
-              );
-            }
-
-            if (gotPartTwoBronzeMedal) {
-              partTwoBronzeMedal = (
-                <a href="#" className="tooltip">
-                  🥉
-                  {partTwoTooltip}
-                </a>
-              );
-            }
-            
-            return (
-              <React.Fragment key={player.id + d}>
-                <td className='star-table-1' key={player.id + d + '1'}>
-                  <span className="star star-gold">
-                    <a href="#" className="tooltip">
-                      {partOneTooltip ? '⭐️' : null}
-                      {partOneTooltip}
-                    </a>
-                  </span><br />
-                  <span className='medal'>
-                    {partOneGoldMedal}
-                    {partOneSilverMedal}
-                    {partOneBronzeMedal}
-                  </span>
-                </td>
-                <td className='star-table-2' key={player.id + d + '2'}>
-                  <span className="star star-gold">
-                    <a href="#" className="tooltip">
-                      {partTwoTooltip ? '⭐️' : null}
-                      {partTwoTooltip}
-                    </a>
-                  </span><br />
-                  <span className='medal'>
-                    {partTwoGoldMedal}
-                    {partTwoSilverMedal}
-                    {partTwoBronzeMedal}
-                  </span>
-                </td>
-              </React.Fragment>
-            );
-          })
-        }
-      </tr>))
+      </tr>
     );
   }
 }
