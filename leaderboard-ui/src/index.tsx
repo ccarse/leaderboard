@@ -26,8 +26,22 @@ class App extends React.Component<{}, State> {
     const players = await get_data();
     const name = window.location.search.replace(/^\?I_am=/g, "").replace(/\s/, "").toLowerCase();
     if(name != '') {
-      var cheerleading = [": You are the best!", ": The only competition is yourself!", ": Ego booster time!!",
-                          ": Screenshot and share this!"];
+      var cheerleading = [
+        ": You are the best!",
+        ": The only competition is yourself!",
+        ": Ego booster time!!",
+        ": Screenshot and share this!",
+        ": You're doing a really good job!",
+        ": Dance like there's nobody watching",
+        ": Be yourself—everyone else is already taken",
+        ": Be the change you wish to see in the world",
+        ": Live, laugh, love",
+        ": It's not the number of breaths we take, but the number of moments that take our breath away",
+        ": Shoot for the moon. Even if you miss, you'll land among the stars",
+        ": If life gives you lemons, make lemonade",
+        ": It takes more muscles to frown than it does to smile",
+        ": You miss 100% of the shots you don't take"
+      ];
       var chosen = cheerleading[Math.floor(Math.random() * cheerleading.length)]
       this.setState({special_title:chosen});
       var filteredPlayers = players.filter(player => player.name == name);
