@@ -10,6 +10,7 @@ interface State {
   year: string;
   board_id: string;
   players?: Player[];
+  special_title: string;
 }
 
 class App extends React.Component<{}, State> {
@@ -23,8 +24,34 @@ class App extends React.Component<{}, State> {
 
   async componentDidMount() {
     const players = await get_data();
-    this.setState({players: players});
-    console.log(JSON.stringify(players, null, 2));
+    const name = window.location.search.replace(/^\?I_am=/g, "").replace(/\s/, "").toLowerCase();
+    if(name != '') {
+      var cheerleading = [
+        ": You are the best!",
+        ": The only competition is yourself!",
+        ": Ego booster time!!",
+        ": Screenshot and share this!",
+        ": You're doing a really good job!",
+        ": Dance like there's nobody watching",
+        ": Be yourself—everyone else is already taken",
+        ": Be the change you wish to see in the world",
+        ": Live, laugh, love",
+        ": It's not the number of breaths we take, but the number of moments that take our breath away",
+        ": Shoot for the moon. Even if you miss, you'll land among the stars",
+        ": If life gives you lemons, make lemonade",
+        ": It takes more muscles to frown than it does to smile",
+        ": You miss 100% of the shots you don't take"
+      ];
+      var chosen = cheerleading[Math.floor(Math.random() * cheerleading.length)]
+      this.setState({special_title:chosen});
+      var filteredPlayers = players.filter(player => player.name == name);
+      for (const [key, value] of Object.entries(filteredPlayers[0].stars_ts)) {
+        filteredPlayers[0].gold_medals[key] = value;
+      }
+      this.setState({players: filteredPlayers});
+    } else {
+      this.setState({players: players});
+    }
   }
 
   render() {
@@ -34,7 +61,7 @@ class App extends React.Component<{}, State> {
     }
     return (
       <div id="content">
-        <h4>Advent of Code {this.state.year}</h4>
+        <h4>Advent of Code {this.state.year}{this.state.special_title}</h4>
         <table id="main-table">
           <tbody>
             <tr>

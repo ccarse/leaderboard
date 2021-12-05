@@ -1,0 +1,4 @@
+You must have Node > 14
+
+To run in dev:
+npm install && npm start, which should automatically open in a browser
