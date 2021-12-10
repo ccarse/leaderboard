@@ -50,6 +50,36 @@ class App extends React.Component<{}, State> {
       }
       this.setState({players: filteredPlayers});
     } else {
+      var days_map = {};
+      // First calculate diffs b/w all star timing
+      for (const [key, value] of Object.entries(players)) {
+        var diffs = {};
+        for (const [inner_key, inner_value] of Object.entries(value.stars_ts)) {
+          if(inner_value[2] !== undefined) {
+            diffs[inner_key] = inner_value[2] - inner_value[1];
+            days_map[inner_key] ||= []
+            days_map[inner_key].push(diffs[inner_key])
+          }
+        }
+      }
+      // Then calculate min of diffs
+      var mins = {}
+      for (const [key, value] of Object.entries(days_map)) {
+        mins[key] = Math.min(...value);
+      }
+      // Then, award bananas
+      for (const [key, value] of Object.entries(players)) {
+        var diffs = {};
+        value.bananas = {};
+        for (const [inner_key, inner_value] of Object.entries(value.stars_ts)) {
+          if(inner_value[2] !== undefined) {
+            var diff = inner_value[2] - inner_value[1];
+            if(mins[inner_key] == diff) {
+              value.bananas[inner_key] = 1;
+            }
+          }
+        }
+      }
       this.setState({players: players});
     }
   }
@@ -73,6 +103,7 @@ class App extends React.Component<{}, State> {
               <th>🥈</th>
               <th>🥉</th>
               <th><span className='medalOffset'>🥇🥈🥉</span></th>
+              <th>Banana ICO</th>
               {days}
             </tr>
             {
