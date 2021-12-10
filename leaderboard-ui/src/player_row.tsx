@@ -14,6 +14,7 @@ export interface Player {
   gold_medals: { [day: string]: { [part: string]: number } };
   silver_medals: { [day: string]: { [part: string]: number } };
   bronze_medals: { [day: string]: { [part: string]: number} };
+  bananas: { [day: string]: number},
   stars_ts: { [day: string]: { [part: string]: number } };
 }
 
@@ -37,6 +38,13 @@ export class PlayerRow extends React.Component<Props, {}> {
     const silverMedalCount = Object.values(player.silver_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
     const bronzeMedalCount = Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
     const allMedalCount = goldMedalCount + silverMedalCount + bronzeMedalCount;
+
+    // TODO: Calculate bananaTotal here
+    if(player.bananas !== undefined) {
+      console.log(player.bananas); // Need to reduce here
+    }
+    const bananaCount = 0; //Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
+
     return (
       <tr key={player.id}>
         <td>{this.props.index + 1}</td>
@@ -47,6 +55,7 @@ export class PlayerRow extends React.Component<Props, {}> {
         <td>{silverMedalCount}</td>
         <td>{bronzeMedalCount}</td>
         <td>{allMedalCount}</td>
+        <td>{bananaCount}</td>
         {
           dayInts.map(d => {
             const partOneTime = player.stars_ts[d] && player.stars_ts[d]["1"] ? (new Date(player.stars_ts[d]["1"] * 1000)) : null;
@@ -64,6 +73,16 @@ export class PlayerRow extends React.Component<Props, {}> {
             let gotPartOneBronzeMedal = player.bronze_medals[`${d}`]["1"];
             let partTwoBronzeMedal;
             let gotPartTwoBronzeMedal = player.bronze_medals[`${d}`]["2"];
+
+            // Set banana part / add banana icon 
+            let bananaPart = '';
+            // if(player.bananas !== undefined) {
+            // if(player.bananas !== undefined && player.banana[`${d}`] !== undefined) {
+            //  console.log('inside here');
+            //  let bananaPart = (
+            //      BANANA ICON
+            //  );
+            // }
 
             const partOneTooltip = partOneTime ? (
               <span>
@@ -89,7 +108,6 @@ export class PlayerRow extends React.Component<Props, {}> {
               );
             }
             
-            // console.log(player.gold_medals[`${d}`][2]);
             if (gotPartTwoGoldMedal) {
               partTwoGoldMedal = (
                 <a href="#" className="tooltip">
@@ -161,6 +179,7 @@ export class PlayerRow extends React.Component<Props, {}> {
                     {partTwoGoldMedal}
                     {partTwoSilverMedal}
                     {partTwoBronzeMedal}
+                    {bananaPart}
                   </span>
                 </td>
               </React.Fragment>
