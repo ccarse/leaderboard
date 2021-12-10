@@ -34,7 +34,8 @@ export async function get_data() {
       bronze_medals: Object.fromEntries(_.range(1, 26).map(i => [i.toString(), {}])),
       stars_ts: Object.fromEntries(Object.entries(player.completion_day_level).map(([d, s]) => {
         return [d, Object.fromEntries(Object.keys(s).map(k => [k, s[k].get_star_ts]))]
-      }))
+      })),
+      bananas: Object.fromEntries(_.range(1, 26).map(i => [i.toString(), null]))
     };
   });
 
@@ -77,6 +78,20 @@ export async function get_data() {
     }
     if (partTwoBronze) {
       players.find((p) => p.id === partTwoBronze.id)!.bronze_medals[day]["2"] = partTwoBronze.ts;
+    }
+
+    const partTwoDiffs = _.compact(partTwoTimes).map((two) => {
+      const partOne = _.compact(partOneTimes).find((one) => two.id === one.id);
+      console.log(partOne);
+      const diff = partOne && (two.ts - partOne.ts);
+      
+      return diff ? {id: two.id, ts: diff} : null;
+    });
+    // console.log(partTwoDiffs);
+    const topBanana = _.orderBy(_.compact(partTwoDiffs), 'ts')[0];
+    if (topBanana) {
+      console.log(topBanana);
+      players.find((p) => p.id === topBanana.id)!.bananas[day] = topBanana.ts;
     }
   }
   return players;

@@ -36,10 +36,18 @@ body {
 }
 #main-table td.star-table-2 {
   border-left: 0px;
+  border-right: 0px;
   padding-left: 0px;
   padding-right: 0px;
   text-align: center;
   min-width: 14px;
+}
+#main-table td.star-table-3 {
+  border-left: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: center;
+  min-width: 0px;
 }
 input {
   border: 1px solid #666666;

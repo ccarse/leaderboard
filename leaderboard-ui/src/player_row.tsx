@@ -14,7 +14,7 @@ export interface Player {
   gold_medals: { [day: string]: { [part: string]: number } };
   silver_medals: { [day: string]: { [part: string]: number } };
   bronze_medals: { [day: string]: { [part: string]: number} };
-  bananas: { [day: string]: number},
+  bananas: { [day: string]: number | null},
   stars_ts: { [day: string]: { [part: string]: number } };
 }
 
@@ -39,11 +39,13 @@ export class PlayerRow extends React.Component<Props, {}> {
     const bronzeMedalCount = Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
     const allMedalCount = goldMedalCount + silverMedalCount + bronzeMedalCount;
 
+    let bananaCount = 0;
     // TODO: Calculate bananaTotal here
     if(player.bananas !== undefined) {
-      console.log(player.bananas); // Need to reduce here
+      
+      bananaCount = _.compact(Object.values(player.bananas)).length;
     }
-    const bananaCount = 0; //Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
+     //Object.values(player.bronze_medals).map(x => Object.values(x).length).reduce((a, b) => a + b, 0);
 
     return (
       <tr key={player.id}>
@@ -75,8 +77,15 @@ export class PlayerRow extends React.Component<Props, {}> {
             let gotPartTwoBronzeMedal = player.bronze_medals[`${d}`]["2"];
 
             // Set banana part / add banana icon 
-            let bananaPart = '';
-            // if(player.bananas !== undefined) {
+            let gotBanana = player.bananas && !!player.bananas[`${d}`];
+            let bananaBadge;
+            if (gotBanana) {
+              bananaBadge = (
+                <a href="#" className="tooltip">
+                  🍌
+                </a>
+              );
+            }
             // if(player.bananas !== undefined && player.banana[`${d}`] !== undefined) {
             //  console.log('inside here');
             //  let bananaPart = (
@@ -179,8 +188,10 @@ export class PlayerRow extends React.Component<Props, {}> {
                     {partTwoGoldMedal}
                     {partTwoSilverMedal}
                     {partTwoBronzeMedal}
-                    {bananaPart}
                   </span>
+                </td>
+                <td className='star-table-2' key={player.id + d + '3'}>
+                  {bananaBadge}
                 </td>
               </React.Fragment>
             );

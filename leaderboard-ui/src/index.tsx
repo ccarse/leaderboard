@@ -10,7 +10,7 @@ interface State {
   year: string;
   board_id: string;
   players?: Player[];
-  special_title: string;
+  special_title?: string;
 }
 
 class App extends React.Component<{}, State> {
@@ -26,7 +26,7 @@ class App extends React.Component<{}, State> {
     const players = await get_data();
     const name = window.location.search.replace(/^\?I_am=/g, "").replace(/\s/, "").toLowerCase();
     if(name != '') {
-      var cheerleading = [
+      let cheerleading = [
         ": You are the best!",
         ": The only competition is yourself!",
         ": Ego booster time!!",
@@ -42,44 +42,14 @@ class App extends React.Component<{}, State> {
         ": It takes more muscles to frown than it does to smile",
         ": You miss 100% of the shots you don't take"
       ];
-      var chosen = cheerleading[Math.floor(Math.random() * cheerleading.length)]
+      let chosen = cheerleading[Math.floor(Math.random() * cheerleading.length)]
       this.setState({special_title:chosen});
-      var filteredPlayers = players.filter(player => player.name == name);
+      let filteredPlayers = players.filter(player => player.name == name);
       for (const [key, value] of Object.entries(filteredPlayers[0].stars_ts)) {
         filteredPlayers[0].gold_medals[key] = value;
       }
       this.setState({players: filteredPlayers});
     } else {
-      var days_map = {};
-      // First calculate diffs b/w all star timing
-      for (const [key, value] of Object.entries(players)) {
-        var diffs = {};
-        for (const [inner_key, inner_value] of Object.entries(value.stars_ts)) {
-          if(inner_value[2] !== undefined) {
-            diffs[inner_key] = inner_value[2] - inner_value[1];
-            days_map[inner_key] ||= []
-            days_map[inner_key].push(diffs[inner_key])
-          }
-        }
-      }
-      // Then calculate min of diffs
-      var mins = {}
-      for (const [key, value] of Object.entries(days_map)) {
-        mins[key] = Math.min(...value);
-      }
-      // Then, award bananas
-      for (const [key, value] of Object.entries(players)) {
-        var diffs = {};
-        value.bananas = {};
-        for (const [inner_key, inner_value] of Object.entries(value.stars_ts)) {
-          if(inner_value[2] !== undefined) {
-            var diff = inner_value[2] - inner_value[1];
-            if(mins[inner_key] == diff) {
-              value.bananas[inner_key] = 1;
-            }
-          }
-        }
-      }
       this.setState({players: players});
     }
   }
@@ -87,7 +57,7 @@ class App extends React.Component<{}, State> {
   render() {
     const days = [];
     for (let day = 1; day <= 25; day++) {
-      days.push(<th key={day} colSpan={2}>{day.toString()}</th>);
+      days.push(<th key={day} colSpan={3}>{day.toString()}</th>);
     }
     return (
       <div id="content">
@@ -103,7 +73,7 @@ class App extends React.Component<{}, State> {
               <th>🥈</th>
               <th>🥉</th>
               <th><span className='medalOffset'>🥇🥈🥉</span></th>
-              <th>Banana ICO</th>
+              <th>🍌</th>
               {days}
             </tr>
             {
