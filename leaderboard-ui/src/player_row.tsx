@@ -1,5 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
+import { HumanizeDurationLanguage, HumanizeDuration } from 'humanize-duration-ts';
 
 export type PartString = '1' | '2';
 
@@ -24,6 +25,9 @@ interface Props {
 }
 
 export class PlayerRow extends React.Component<Props, {}> {
+  langService: HumanizeDurationLanguage = new HumanizeDurationLanguage();
+  humanizer: HumanizeDuration = new HumanizeDuration(this.langService);
+
   constructor(props: Props) {
     super(props);
   }
@@ -62,6 +66,7 @@ export class PlayerRow extends React.Component<Props, {}> {
           dayInts.map(d => {
             const partOneTime = player.stars_ts[d] && player.stars_ts[d]["1"] ? (new Date(player.stars_ts[d]["1"] * 1000)) : null;
             const partTwoTime = player.stars_ts[d] && player.stars_ts[d]["2"] ? (new Date(player.stars_ts[d]["2"] * 1000)) : null;
+            const partTwoDuration = player.stars_ts[d] && player.stars_ts[d]["2"] && player.stars_ts[d]["1"] && this.humanizer.humanize((player.stars_ts[d]["2"] - player.stars_ts[d]["1"]) * 1000);
 
             let partOneGoldMedal;
             let gotPartOneGoldMedal = player.gold_medals[`${d}`]["1"];
@@ -79,19 +84,21 @@ export class PlayerRow extends React.Component<Props, {}> {
             // Set banana part / add banana icon 
             let gotBanana = player.bananas && !!player.bananas[`${d}`];
             let bananaBadge;
+            const bananaTooltip = player.bananas[`${d}`] && gotBanana ? (
+              <span>
+                {'Banana Earned!'}<br />
+                {'Fastest from Part 1 -> Part 2'}<br />
+                It took {partTwoTime && partOneTime && partTwoDuration} to solve part 2<br />
+              </span>
+            ) : null;
             if (gotBanana) {
               bananaBadge = (
                 <a href="#" className="tooltip">
                   🍌
+                  {bananaTooltip}
                 </a>
               );
             }
-            // if(player.bananas !== undefined && player.banana[`${d}`] !== undefined) {
-            //  console.log('inside here');
-            //  let bananaPart = (
-            //      BANANA ICON
-            //  );
-            // }
 
             const partOneTooltip = partOneTime ? (
               <span>
@@ -104,6 +111,7 @@ export class PlayerRow extends React.Component<Props, {}> {
               <span>
                 Day {d} Star 2<br />
                 Obtained {partTwoTime.toLocaleString()}<br />
+                It took {partTwoTime && partOneTime && partTwoDuration} to solve part 2<br />
                 {(gotPartTwoGoldMedal && 'Gold Medal') || (gotPartTwoSilverMedal && 'Silver Medal') || (gotPartTwoBronzeMedal && 'Bronze Medal')}
               </span>
             ) : null;
@@ -190,7 +198,7 @@ export class PlayerRow extends React.Component<Props, {}> {
                     {partTwoBronzeMedal}
                   </span>
                 </td>
-                <td className='star-table-2' key={player.id + d + '3'}>
+                <td className='star-table-3' key={player.id + d + '3'}>
                   {bananaBadge}
                 </td>
               </React.Fragment>
