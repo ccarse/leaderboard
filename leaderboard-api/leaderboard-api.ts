@@ -1,9 +1,9 @@
-let data: string|null = null;
-let lastRequest: number|null = null;
+const cached: { [year: number]: { ts: number, data: string } } = {};
+const cacheMinutes = 7;
 
 const cookie = ''
 const headers = new Headers();
-headers.set('Cookie', cookie);
+headers.set('Cookie', `session=${cookie}`);
 
 const server = Deno.listen({ port: 1337 });
 console.log(`HTTP webserver running.  Access it at:  http://localhost:1337/`);
@@ -19,8 +19,16 @@ async function serveHttp(conn: Deno.Conn) {
 
   const httpConn = Deno.serveHttp(conn);
   for await (const requestEvent of httpConn) {
-    const json = await getData();
-    
+    const year = getYear(requestEvent);
+    console.log(`Request received for year: ${year}`);
+
+    if (year < 2015 || year > new Date().getFullYear()) {
+      requestEvent.respondWith(new Response('Invalid year', { status: 400, headers }));
+      continue;
+    }
+
+    const json = await getData(year);
+
     requestEvent.respondWith(
       new Response(json, {
         status: 200,
@@ -30,12 +38,29 @@ async function serveHttp(conn: Deno.Conn) {
   }
 }
 
-async function getData() {
-  const fifteenMinutes = 15 * 60 * 1000;
-  if (!lastRequest || lastRequest < (Date.now() - fifteenMinutes)) {
+async function getData(year: number) {
+  let data;
+  let cache = cached[year];
+  const cacheTimeout = cacheMinutes * 60 * 1000;
+  if (!cache || cache["ts"] < (Date.now() - cacheTimeout)) {
     console.log(`Cache miss.`);
-    data = await (await fetch('https://adventofcode.com/2021/leaderboard/private/view/759284.json', { headers })).text();
-    lastRequest = Date.now();
+    data = await (await fetch(`https://adventofcode.com/${year}/leaderboard/private/view/759284.json`, { headers })).text();
+    cache = { ts: Date.now(), data: data };
+    cached[year] = cache;
+  } else {
+    data = cache["data"];
   }
   return data;
+}
+
+function getYear(req: Deno.RequestEvent) {
+  const url = req.request.url
+  const lastIndex = url.lastIndexOf('/');
+  const year = parseInt(url.slice(lastIndex + 1));
+
+  if (isNaN(year)) {
+    return new Date().getFullYear();
+  }
+
+  return year;
 }

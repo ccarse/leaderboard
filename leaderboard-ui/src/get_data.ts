@@ -21,8 +21,9 @@ interface MemberType {
   stars: number;
 }
 
-export async function get_data() {
-  const data = JSON.parse(await (await fetch('https://codycar.se/leaderboard-api')).text()) as AocApi;
+export async function get_data(year: number) {
+  const data = JSON.parse(await (await fetch(`https://codycar.se/leaderboard-api/${year}`)).text()) as AocApi;
+  // const data = JSON.parse(await (await fetch(`http://localhost:1337/${year}`)).text()) as AocApi;
   const members:MembersType = data.members;
   let vals:MemberType[] = Object.values(members);
   vals = vals.filter((v) => v.stars > 0);

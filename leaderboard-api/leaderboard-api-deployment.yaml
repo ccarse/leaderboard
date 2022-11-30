@@ -33,13 +33,14 @@ spec:
   selector:
     app: leaderboard-api
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: leaderboard-api
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-challenge-type: http01
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
   - hosts:
@@ -49,7 +50,15 @@ spec:
   - host: codycar.se
     http:
       paths:
-      - path: /leaderboard-api
+      - pathType: Prefix
+        path: /leaderboard-api
         backend:
-          serviceName: leaderboard-api
-          servicePort: 80
+          service: 
+            name: leaderboard-api
+            port: 
+              number: 80
+  # defaultBackend:
+  #   service: 
+  #     name: leaderboard-api
+  #     port: 
+  #       number: 80
